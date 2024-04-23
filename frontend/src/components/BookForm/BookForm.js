@@ -1,23 +1,36 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
+import {v4 as uuidv4} from 'uuid'
 import { addBook } from "../../redux/books/actionCreators";
+import bookData from "../../data/books.json"
 import "./BookForm.css"
 export default function BookForm() {
+    
     const [title, setTitle] =useState('')
-    const [autor, setAutor] = useState('')
+    const [author, setAuthor] = useState('')
     const  dispatch = useDispatch()
+    const handleRandomClick =() =>{
+        const randomIndex = Math.floor(Math.random() * bookData.length)
+        const randomBook = bookData[randomIndex]
+        const randomBookWithId ={
+            ...randomBook,
+            id:uuidv4(),
+            isFavorite:false,
+        }
+        dispatch(addBook(randomBookWithId))
+    }
     const handleSubmit = (e) =>{
         e.preventDefault()
-        if(autor&& title){
+        if(author&& title){
             const book = {
                 title,
-                autor,
+                author,
+                id:uuidv4(),
+                isFavorite:false,
                 
             }
-            console.log(addBook(book))
             dispatch(addBook(book))
-            console.log(title,autor)
-            setAutor('')
+            setAuthor('')
             setTitle('')
         }
     }
@@ -30,10 +43,11 @@ export default function BookForm() {
                 <input type="text" id="title" value={title} onChange={(e)=>setTitle(e.target.value)}></input>
             </div>
             <div>
-                <label htmlForm = "autor">Autor:</label>
-                <input type="text" id="autor" value={autor} onChange={(e)=>setAutor(e.target.value)}></input>
+                <label htmlForm = "author">Autor:</label>
+                <input type="text" id="auhtor" value={author} onChange={(e)=>setAuthor(e.target.value)}></input>
             </div>
-            <button type="submit ">Add Book</button>
+            <button type="submit">Add Book</button>
+            <button type="button" onClick={handleRandomClick}>Random Book</button>
         </form>
     </div>
   );
