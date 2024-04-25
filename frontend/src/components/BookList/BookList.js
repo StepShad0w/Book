@@ -3,9 +3,17 @@ import { FaRegStar, FaStar } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteBook, toggleFavorite } from "../../redux/books/actionCreators";
 import "./BookList.css";
+import {
+  selectTitleFilter,
+  selectAuthorFilter,
+  selectOnlyFavoriteFilter,
+} from "../../redux/slices/sliceFilter";
 
 export default function BookList() {
   const books = useSelector((state) => state.books);
+  const titleFilter = useSelector(selectTitleFilter);
+  const auhtorFilter = useSelector(selectAuthorFilter);
+  const onlyFavotite = useSelector(selectOnlyFavoriteFilter)
   const dispatch = useDispatch();
 
   const handleDeleteBook = (id) => {
@@ -15,6 +23,16 @@ export default function BookList() {
   const handleChange = (id) => {
     dispatch(toggleFavorite(id));
   };
+  const filteredBooks = books.filter((book) => {
+    const matchesTitle = book.title
+      .toLowerCase()
+      .includes(titleFilter.toLowerCase());
+    const matchesAuthor = book.author
+      .toLowerCase()
+      .includes(auhtorFilter.toLowerCase());
+    const matchesFavorite = onlyFavotite ? book.isFavorite : true
+    return matchesTitle && matchesAuthor && matchesFavorite;
+  });
 
   const [favoriteCount, setFavoriteCount] = useState(0);
 
@@ -23,6 +41,21 @@ export default function BookList() {
     setFavoriteCount(count);
   }, [books]);
 
+  const highlightMatch = (text, filter)=>{
+    if(!filter) return text
+    const regex = new RegExp(`(${filter})`, "gi")
+    return text.split(regex).map((part, i)=>{
+      if(part.toLowerCase() === filter.toLowerCase()){
+        return(
+          <span key={i} className="highlight">
+            {part}
+          </span>
+        )
+      }
+      return part
+    })
+  }
+
   return (
     <div className="app-block book-list">
       <h2>Book List</h2>
@@ -30,18 +63,18 @@ export default function BookList() {
         <p>No books</p>
       ) : (
         <ul>
-          {books.map((book, i) => (
+          {filteredBooks.map((book, i) => (
             <li key={book.id}>
               <div className="book-info">
                 {book.year ? (
                   <span>
-                    <strong>{++i}.</strong> {book.title} by{" "}
-                    <strong>{book.author}</strong> in {book.year}
+                    <strong>{++i}.</strong> {highlightMatch(book.title, titleFilter)} by{" "}
+                    <strong>{highlightMatch( book.author, auhtorFilter  )}</strong> in {book.year}
                   </span>
                 ) : (
                   <span>
-                    <strong>{++i}.</strong> {book.title} by{" "}
-                    <strong>{book.author}</strong>
+                    <strong>{++i}.</strong> {highlightMatch(book.title, titleFilter)} by{" "}
+                    <strong>{highlightMatch( book.author, auhtorFilter  )}</strong>
                   </span>
                 )}
               </div>
