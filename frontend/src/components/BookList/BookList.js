@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaRegStar, FaStar } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteBook, toggleFavorite } from "../../redux/books/actionCreators";
+import { deleteBook, toggleFavorite, selectBooks } from "../../redux/slices/BookSlice";
 import "./BookList.css";
 import {
   selectTitleFilter,
@@ -10,7 +10,7 @@ import {
 } from "../../redux/slices/sliceFilter";
 
 export default function BookList() {
-  const books = useSelector((state) => state.books);
+  const books = useSelector(selectBooks);
   const titleFilter = useSelector(selectTitleFilter);
   const auhtorFilter = useSelector(selectAuthorFilter);
   const onlyFavotite = useSelector(selectOnlyFavoriteFilter)
@@ -69,12 +69,12 @@ export default function BookList() {
                 {book.year ? (
                   <span>
                     <strong>{++i}.</strong> {highlightMatch(book.title, titleFilter)} by{" "}
-                    <strong>{highlightMatch( book.author, auhtorFilter  )}</strong> in {book.year}
+                    <strong>{highlightMatch( book.author, auhtorFilter  )}</strong> in {book.year} ({book.source})
                   </span>
                 ) : (
                   <span>
                     <strong>{++i}.</strong> {highlightMatch(book.title, titleFilter)} by{" "}
-                    <strong>{highlightMatch( book.author, auhtorFilter  )}</strong>
+                    <strong>{highlightMatch( book.author, auhtorFilter  )}</strong> ({book.source})
                   </span>
                 )}
               </div>

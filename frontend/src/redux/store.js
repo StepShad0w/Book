@@ -1,5 +1,5 @@
 import {configureStore} from "@reduxjs/toolkit"
-import booksReducer from "./books/reducer";
+import booksReducer from "./slices/BookSlice";
 import sliceFilter from "./slices/sliceFilter"
 const store = configureStore({
     reducer:{
