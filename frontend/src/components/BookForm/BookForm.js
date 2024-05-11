@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addBook, thunkFunction } from "../../redux/slices/BookSlice";
+import { addBook, fetcBook } from "../../redux/slices/BookSlice";
+import { setError } from "../../redux/slices/errorSlise";
 import bookData from "../../data/books.json"
 import "./BookForm.css"
 import createBooksWithId from "../../utils/createBooksWithId";
@@ -25,10 +26,13 @@ export default function BookForm() {
             setAuthor('')
             setTitle('')
         }
+        else{
+            dispatch(setError("You must fill inputs"))
+        }
     }
    
     const handleAddRandomByAPI = () =>{
-        dispatch(thunkFunction)
+        dispatch(fetcBook())
     }    
   return (
     <div className="app-block book-form">
