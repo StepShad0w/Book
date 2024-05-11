@@ -32,7 +32,7 @@ export default function BookForm() {
     }
    
     const handleAddRandomByAPI = () =>{
-        dispatch(fetcBook())
+        dispatch(fetcBook("http://localhost:5000/random-book"))
     }    
   return (
     <div className="app-block book-form">
